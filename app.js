@@ -217,7 +217,8 @@ const el = {
   sDay: $('sDay'), sCur: $('sCur'), sBest: $('sBest'), tNow: $('tNow'), tArrow: $('tArrow'), tNote: $('tNote'),
   bars: $('bars'), heat: $('heat'), proj: $('proj'),
   settings: $('settings'), cycleInfo: $('cycleInfo'), ioMsg: $('ioMsg'), archives: $('archives'),
-  importFile: $('importFile'), importConfirm: $('importConfirm')
+  importFile: $('importFile'), importConfirm: $('importConfirm'),
+  quote: $('quote'), endQuote: $('endQuote')
 };
 
 el.figure.innerHTML = silhouette();
@@ -264,6 +265,36 @@ el.when.addEventListener('click', e => {
 
 /* ================= Rendu ================= */
 
+// Typographie française : espaces fines insécables avant ; : ! ? » et après «.
+const frType = t => t.replace(/ ([;:!?»])/g, '\u202F$1').replace(/« /g, '«\u202F');
+
+function setQuote(box, q) {
+  if (!q || box.dataset.q === q.t) return;
+  box.dataset.q = q.t;
+  box.classList.toggle('long', q.t.length > 170 && q.t.length <= 260);
+  box.classList.toggle('xlong', q.t.length > 260);
+  box.querySelector('p').textContent = frType(q.t);
+  const f = box.querySelector('footer');
+  f.textContent = q.a;
+  if (q.s) { const i = document.createElement('i'); i.textContent = ' · ' + q.s; f.append(i); }
+  box.classList.remove('open');
+  box.style.animation = 'none'; void box.offsetWidth; box.style.animation = '';
+  markTruncated(box);
+}
+
+// Citation longue : tronquée à quelques lignes, un toucher l'ouvre en entier.
+function markTruncated(box) {
+  const p = box.querySelector('p');
+  box.classList.toggle('more', !box.classList.contains('open') && p.scrollHeight > p.clientHeight + 2);
+}
+el.quote.addEventListener('click', () => {
+  if (!el.quote.classList.contains('more') && !el.quote.classList.contains('open')) return;
+  el.quote.classList.toggle('open');
+  markTruncated(el.quote);
+});
+window.addEventListener('resize', () => markTruncated(el.quote));
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => markTruncated(el.quote));
+
 function render() {
   const st = compute();
   const t = st.today;
@@ -284,6 +315,8 @@ function renderHome(st) {
   el.when.querySelectorAll('button').forEach(b => b.classList.toggle('on', Number(b.dataset.when) === view));
   habitList(el.habits, dayKey(t - view));
 
+  setQuote(el.quote, QUOTES[(Math.min(t, LEN) - 1) % QUOTES.length]);
+
   setFill(el.figure, st.fill);
   animateNumber(el.pct, st.fill * 100, v => v.toLocaleString('fr-FR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + NBSP + '%');
   el.day.textContent = `Jour ${t} / ${LEN}`;
@@ -292,6 +325,7 @@ function renderHome(st) {
 function renderEnd(st) {
   const vd = verdictOf(st);
   setFill(el.endFigure, st.fill);
+  setQuote(el.endQuote, FINAL_QUOTE);
 
   el.verdict.textContent = vd.ok ? 'Réussi' : 'Non réussi';
   el.verdict.className = 'verdict' + (vd.ok ? ' ok' : '');

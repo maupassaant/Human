@@ -26,6 +26,7 @@
     <!-- Écran 1 : accueil (ou bilan à partir du jour 91) -->
     <section class="page" id="page-home" aria-label="Aujourd'hui">
       <div class="home" id="home">
+        <blockquote class="quote" id="quote"><p></p><footer></footer></blockquote>
         <figure class="figure" id="figure"></figure>
         <div class="meta">
           <div class="pct num" id="pct">0 %</div>
@@ -43,6 +44,7 @@
         <figure class="figure figure--end" id="endFigure"></figure>
         <h1 class="verdict" id="verdict"></h1>
         <div class="verdict-note" id="verdictNote"></div>
+        <blockquote class="quote quote--end" id="endQuote"><p></p><footer></footer></blockquote>
         <dl class="facts">
           <div><dt>Taux global</dt><dd class="num" id="fGlobal"></dd></div>
           <div><dt>Meilleure série</dt><dd class="num" id="fBest"></dd></div>
@@ -124,6 +126,7 @@
     </div>
   </div>
 
+  <script src="quotes.js" defer></script>
   <script src="app.js" defer></script>
 </body>
 </html>
