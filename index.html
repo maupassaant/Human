@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>human</title>
+  <meta name="description" content="90 jours, 4 habitudes.">
+  <meta name="theme-color" content="#232325">
+  <meta name="color-scheme" content="dark">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="human">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="pager" id="pager">
+
+    <!-- Écran 1 : accueil (ou bilan à partir du jour 91) -->
+    <section class="page" id="page-home" aria-label="Aujourd'hui">
+      <div class="home" id="home">
+        <figure class="figure" id="figure"></figure>
+        <div class="meta">
+          <div class="pct num" id="pct">0 %</div>
+          <div class="day" id="day">Jour 1 / 90</div>
+        </div>
+        <div class="when" id="when" hidden>
+          <button type="button" data-when="1">Hier</button>
+          <button type="button" data-when="0" class="on">Aujourd'hui</button>
+        </div>
+        <ul class="habits" id="habits"></ul>
+      </div>
+
+      <div class="end" id="end" hidden>
+        <p class="eyebrow">Bilan · 90 jours</p>
+        <figure class="figure figure--end" id="endFigure"></figure>
+        <h1 class="verdict" id="verdict"></h1>
+        <div class="verdict-note" id="verdictNote"></div>
+        <dl class="facts">
+          <div><dt>Taux global</dt><dd class="num" id="fGlobal"></dd></div>
+          <div><dt>Meilleure série</dt><dd class="num" id="fBest"></dd></div>
+          <div><dt>Plus forte</dt><dd id="fStrong"></dd></div>
+          <div><dt>Plus faible</dt><dd id="fWeak"></dd></div>
+        </dl>
+        <div class="late" id="late" hidden>
+          <p class="eyebrow">Jour 90 · modifiable jusqu'à ce soir</p>
+          <ul class="habits" id="lateHabits"></ul>
+        </div>
+        <button type="button" class="ghost" id="restart">Recommencer 90 jours</button>
+      </div>
+    </section>
+
+    <!-- Écran 2 : stats -->
+    <section class="page" id="page-stats" aria-label="Progrès">
+      <div class="stats">
+        <header class="s-head">
+          <h1 class="title">human</h1>
+          <p class="eyebrow" id="sDay"></p>
+        </header>
+
+        <section class="block">
+          <div class="pair">
+            <div class="stat"><span class="big num" id="sCur">0</span><span class="cap">série en cours</span></div>
+            <div class="stat"><span class="big num" id="sBest">0</span><span class="cap">meilleure série</span></div>
+          </div>
+          <p class="hint">jours parfaits, 4 sur 4</p>
+        </section>
+
+        <section class="block">
+          <h2 class="eyebrow">Tendance</h2>
+          <div class="trend">
+            <span class="big num" id="tNow">—</span>
+            <span class="arrow" id="tArrow"></span>
+          </div>
+          <p class="hint" id="tNote"></p>
+        </section>
+
+        <section class="block">
+          <h2 class="eyebrow">Réussite</h2>
+          <div class="bars" id="bars"></div>
+        </section>
+
+        <section class="block">
+          <h2 class="eyebrow">90 jours</h2>
+          <div class="heat" id="heat" role="img" aria-label="Carte des 90 jours"></div>
+        </section>
+
+        <section class="block">
+          <p class="projection" id="proj"></p>
+          <p class="hint">objectif : 80 % des cases, aucune habitude sous 70 %</p>
+        </section>
+
+        <button type="button" class="link" id="openSettings">Réglages</button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabs" id="tabs">
+    <button type="button" data-page="0" class="on" aria-label="Aujourd'hui"><span></span></button>
+    <button type="button" data-page="1" aria-label="Progrès"><span></span></button>
+  </nav>
+
+  <!-- Réglages -->
+  <div class="sheet" id="settings" hidden role="dialog" aria-label="Réglages">
+    <div class="sheet-in">
+      <p class="eyebrow">Réglages</p>
+      <p class="line" id="cycleInfo"></p>
+      <div class="actions">
+        <button type="button" class="ghost" id="exportBtn">Exporter</button>
+        <button type="button" class="ghost" id="importBtn">Importer</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+      <p class="line muted" id="ioMsg"></p>
+      <button type="button" class="ghost" id="importConfirm" hidden>Remplacer les données</button>
+      <div id="archives"></div>
+      <button type="button" class="link" id="closeSettings">Fermer</button>
+    </div>
+  </div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
