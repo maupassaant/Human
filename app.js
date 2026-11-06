@@ -5,9 +5,9 @@
 const KEY = 'human.v1';
 const ARCH_KEY = 'human.archives';
 const LEN = 90;
-const N = 4;
+const N = 5;
 const TOTAL = LEN * N;
-const HABITS = ['Lecture 15 min', 'Déjeuner healthy', 'Dîner healthy', 'Sport 15 min'];
+const HABITS = ['Lecture 15 min', 'Déjeuner healthy', 'Dîner healthy', 'Sport 15 min', '2 L d’eau'];
 const GOAL_GLOBAL = 0.8;
 const GOAL_HABIT = 0.7;
 
@@ -41,11 +41,17 @@ const plural = (n, w) => `${n} ${w}${n > 1 ? 's' : ''}`;
 
 /* ================= Stockage ================= */
 
+// Un jour = N booléens. Les jours enregistrés avec moins de cases (ex. avant l'ajout de l'eau) sont complétés.
+const normDay = v => Array.isArray(v) && v.length >= 1 && v.length <= N
+  ? Array.from({ length: N }, (_, i) => Boolean(v[i]))
+  : null;
+
 function sanitize(s) {
   if (!s || typeof s !== 'object' || !DATE_RE.test(s.startDate) || !s.days || typeof s.days !== 'object') return null;
   const days = {};
   for (const [k, v] of Object.entries(s.days)) {
-    if (DATE_RE.test(k) && Array.isArray(v) && v.length === N) days[k] = v.map(Boolean);
+    const d = DATE_RE.test(k) ? normDay(v) : null;
+    if (d) days[k] = d;
   }
   return { startDate: s.startDate, days };
 }
@@ -74,7 +80,7 @@ let currentKey = todayKey();
 
 const dayIndex = () => Math.max(1, diffDays(state.startDate, todayKey()) + 1);
 const dayKey = i => addDays(state.startDate, i - 1);
-const getDay = k => { const v = state.days[k]; return Array.isArray(v) && v.length === N ? v.map(Boolean) : [false, false, false, false]; };
+const getDay = k => normDay(state.days[k]) || Array(N).fill(false);
 
 function isEditable(k) {
   const i = diffDays(state.startDate, k) + 1;
@@ -83,10 +89,10 @@ function isEditable(k) {
 }
 
 function compute(s = state, today = dayIndex()) {
-  const get = k => { const v = s.days[k]; return Array.isArray(v) && v.length === N ? v.map(Boolean) : [false, false, false, false]; };
+  const get = k => normDay(s.days[k]) || Array(N).fill(false);
   const rows = [];
   let checked = 0, evaluated = 0;
-  const hc = [0, 0, 0, 0], he = [0, 0, 0, 0];
+  const hc = Array(N).fill(0), he = Array(N).fill(0);
 
   for (let i = 1; i <= LEN; i++) {
     const k = addDays(s.startDate, i - 1);
@@ -368,7 +374,7 @@ function renderStats(st) {
     if (r.future) cls.push('future');
     else if (r.c) cls.push('l' + r.c);
     if (r.isToday) cls.push('today');
-    html += `<div class="${cls.join(' ')}" title="Jour ${r.i} · ${fmtDate(r.k)} · ${r.c}/4"></div>`;
+    html += `<div class="${cls.join(' ')}" title="Jour ${r.i} · ${fmtDate(r.k)} · ${r.c}/${N}"></div>`;
   }
   html += '<div class="cell void"></div>';
   el.heat.innerHTML = html;

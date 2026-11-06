@@ -1,7 +1,7 @@
 /* human — service worker : fonctionnement 100 % hors-ligne.
    App : stale-while-revalidate (mise à jour silencieuse au lancement suivant).
    Polices Google : cache-first. */
-const VERSION = 'human-v1';
+const VERSION = 'human-v2';
 const FONTS = 'human-fonts-v1';
 const SHELL = [
   './',
